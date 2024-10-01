@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"errors"
+
 	"shanker.com/expense-tracker/db"
 )
 
@@ -11,6 +13,8 @@ const insertRecordQuery =  "INSERT INTO expenses(category, amount, date, descrip
 const updateRecordQuery = "UPDATE expenses SET category = $1, amount = $2, date = $3, description = $4 	WHERE expense_id = $5"
 
 const deleteRecordQuery = "DELETE FROM expenses	WHERE expense_id = $1"
+
+const checkIfRecordExists = "SELECT EXISTS(SELECT 1 FROM expenses WHERE expense_id = $1)"
 
 
 
@@ -63,7 +67,12 @@ func (expense *Expense) Save() error {
 
 
 func (expense *Expense) Modify(eid int64) error {
+	err := checkIfExists(eid)
 
+	if(err != nil){
+		return err
+	}
+	
 	stmt, err := db.DB.Prepare(updateRecordQuery)
 	if err != nil {
 		return err
@@ -76,6 +85,26 @@ func (expense *Expense) Modify(eid int64) error {
 	}
 
 	return nil
+}
+
+func checkIfExists(eid int64) error{
+	stmtCheck, err := db.DB.Prepare(checkIfRecordExists)
+	if err != nil {
+		return err 
+	}
+	defer stmtCheck.Close()
+
+	
+	var exists bool
+	err = stmtCheck.QueryRow(eid).Scan(&exists)
+	if err != nil {
+		return err 
+	}
+
+	if(!exists){
+		return errors.New("the expense doesnot exists")
+	}
+	return nil;
 }
 
 

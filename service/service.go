@@ -34,7 +34,7 @@ func CreateExpense(context *gin.Context) {
 
 	err = validations.ValidateExpenseObject(&expense)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": err})
+		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -64,7 +64,7 @@ func EditExpense(context *gin.Context) {
 
 	err = validations.ValidateExpenseObject(&expense)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": err})
+		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -78,7 +78,7 @@ func EditExpense(context *gin.Context) {
 
 	err = expense.Modify(eId)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Some error occurred!"})
+		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
