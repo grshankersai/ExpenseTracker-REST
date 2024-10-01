@@ -1,3 +1,0 @@
-Step 1. Create an expense table, table should contain - (id,category,amount,date , description)
-
-Step 2. expose routes and perform CRUD operation.
