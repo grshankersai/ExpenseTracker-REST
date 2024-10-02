@@ -21,18 +21,17 @@ const checkIfRecordExists = "SELECT EXISTS(SELECT 1 FROM expenses WHERE expense_
 
 
 func GetAllExpenses() ([]entity.Expense, error) {
-
 	stmt, err := db.DB.Prepare(getAllRecordsQuery)
-	if err != nil {
+	if err != nil {		
 		return nil, err
 	}
-	defer stmt.Close()
+	defer stmt.Close()	
 		
 	rows, err := stmt.Query()
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer rows.Close()	
 
 	var expenses []entity.Expense
 
@@ -44,6 +43,7 @@ func GetAllExpenses() ([]entity.Expense, error) {
 		}
 		expenses = append(expenses, expense)
 	}
+
 
 	return expenses, nil
 }
