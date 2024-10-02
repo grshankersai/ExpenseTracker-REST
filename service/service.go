@@ -6,11 +6,12 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"shanker.com/expense-tracker/entity"
+	"shanker.com/expense-tracker/repository"
 	"shanker.com/expense-tracker/validations"
 )
 
 func GetAllExpenses(context *gin.Context) {
-	expenses , err := entity.GetAllExpenses()
+	expenses , err := repository.GetAllExpenses()
 	
 	if err!=nil {
 		context.JSON(http.StatusInternalServerError,gin.H{"message":"Couldnt Fetch!!"})
@@ -39,7 +40,7 @@ func CreateExpense(context *gin.Context) {
 	}
 
 	
-	err = expense.Save()
+	err = repository.Save(&expense)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": "Couldn't create expense, try again later!"})
 		return
@@ -76,7 +77,7 @@ func EditExpense(context *gin.Context) {
 		return
 	}
 
-	err = expense.Modify(eId)
+	err = repository.Modify(eId,&expense)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
@@ -94,13 +95,13 @@ func DeleteExpense(context *gin.Context){
 		return
 	}
 	
-	err = entity.Delete(eId)
+	err = repository.Delete(eId)
 
 	if err != nil{
 		context.JSON(http.StatusBadRequest, gin.H{"message":"Couldnt delete the record!"})
 		return
 	}
 
-	context.JSON(http.StatusBadRequest, gin.H{"message":"Deleted the record!!"})
+	context.JSON(http.StatusOK, gin.H{"message":"Deleted the record!!"})
 
 }

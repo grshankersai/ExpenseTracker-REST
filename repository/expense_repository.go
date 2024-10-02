@@ -1,9 +1,10 @@
-package entity
+package repository
 
 import (
 	"errors"
 
 	"shanker.com/expense-tracker/db"
+	"shanker.com/expense-tracker/entity"
 )
 
 const getAllRecordsQuery = "SELECT * FROM expenses"
@@ -19,7 +20,7 @@ const checkIfRecordExists = "SELECT EXISTS(SELECT 1 FROM expenses WHERE expense_
 
 
 
-func GetAllExpenses() ([]Expense, error) {
+func GetAllExpenses() ([]entity.Expense, error) {
 
 	stmt, err := db.DB.Prepare(getAllRecordsQuery)
 	if err != nil {
@@ -33,10 +34,10 @@ func GetAllExpenses() ([]Expense, error) {
 	}
 	defer rows.Close()
 
-	var expenses []Expense
+	var expenses []entity.Expense
 
 	for rows.Next() {
-		var expense Expense
+		var expense entity.Expense
 		err := rows.Scan(&expense.ExpenseID, &expense.Category, &expense.Amount, &expense.Date, &expense.Description)
 		if err != nil {
 			return nil, err
@@ -49,7 +50,7 @@ func GetAllExpenses() ([]Expense, error) {
 
 
 
-func (expense *Expense) Save() error {
+func Save(expense *entity.Expense) error {
 
 	stmt, err := db.DB.Prepare(insertRecordQuery)
 	if err != nil {
@@ -66,7 +67,7 @@ func (expense *Expense) Save() error {
 }
 
 
-func (expense *Expense) Modify(eid int64) error {
+func  Modify(eid int64,expense *entity.Expense) error {
 	err := checkIfExists(eid)
 
 	if(err != nil){
