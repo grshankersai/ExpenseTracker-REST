@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package expense;
+
+option go_package = "shanker.com/expense-tracker/proto";
+
+service ExpenseService {
+  rpc GetAllExpenses (EmptyRequest) returns (ExpenseListResponse);
+  rpc CreateExpense (ExpenseRequest) returns (ExpenseResponse);
+  rpc EditExpense (EditExpenseRequest) returns (ExpenseResponse);
+  rpc DeleteExpense (DeleteExpenseRequest) returns (DeleteResponse);
+}
+
+message Expense {
+  int64 expense_id = 1;
+  string category = 2;
+  double amount = 3;
+  string date = 4;
+  string description = 5;
+}
+
+message EmptyRequest {}
+
+message ExpenseRequest {
+  string category = 1;
+  double amount = 2;
+  string date = 3;
+  string description = 4;
+}
+
+message EditExpenseRequest {
+  int64 expense_id = 1;
+  string category = 2;
+  double amount = 3;
+  string date = 4;
+  string description = 5;
+}
+
+message DeleteExpenseRequest {
+  int64 expense_id = 1;
+}
+
+message ExpenseListResponse {
+  repeated Expense expenses = 1;
+}
+
+message ExpenseResponse {
+  Expense expense = 1;
+  string message = 2;
+}
+
+message DeleteResponse {
+  string message = 1;
+}
